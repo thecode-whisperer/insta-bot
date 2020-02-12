@@ -2,7 +2,6 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from time import sleep
 import os
-import credentials
 import random
 
 
@@ -80,7 +79,7 @@ class InstagramBot:
             next_btn.click()
             sleep(self.random_number_generator(3, 7))
 
-    def user_followers(self, user, limit=10):
+    def user_followers(self, user, limit=30):
         self.nav_user(user)
         sleep(self.random_number_generator(2, 4))
         followers_btn = self.driver.find_element_by_xpath(f"//a[contains(@href, '/{user}/followers/')]")
@@ -112,26 +111,29 @@ class InstagramBot:
             self.unfollow_user(user)
     
     def smart_follow_check(self, user):
-        self.nav_user(user)
-        followers = self.driver.find_element_by_xpath(f'//a[contains(@href, "{user}/followers")]/span')
-        string = followers.text
-        string = string.replace(',', '')
-        followers_num = int(string)
-        following = self.driver.find_element_by_xpath(f'//a[contains(@href, "{user}/following")]/span')
-        string1 = following.text
-        string1 = string1.replace(',', '')
-        following_num = int(string1)
-        if following_num > followers_num:
-            return True
-        return False
-    
+        try:
+            self.nav_user(user)
+            followers = self.driver.find_element_by_xpath(f'//a[contains(@href, "{user}/followers")]/span')
+            string = followers.text
+            string = string.replace(',', '')
+            followers_num = int(string)
+            following = self.driver.find_element_by_xpath(f'//a[contains(@href, "{user}/following")]/span')
+            string1 = following.text
+            string1 = string1.replace(',', '')
+            following_num = int(string1)
+            if following_num > followers_num:
+                return True
+            return False
+        except:
+            pass
+
     # Follows a user if they are following more people than they have followers
     def smart_follow(self, user):
         if self.smart_follow_check(user) == True:
             self.follow_user(user)
 
     # Comments on the first photo with a specified hastag
-    def comment_post(self, tag, comment):
+    def comment_tag_post(self, tag, comment):
         self.driver.get(f'https://www.instagram.com/explore/tags/{tag}/')
         sleep(self.random_number_generator(2, 4))
         photo = self.driver.find_element_by_class_name('eLAPa')
@@ -170,5 +172,23 @@ class InstagramBot:
         for user in users:
             self.comment_user_post(user, comment)
 
-bot = InstagramBot('YourUsername', 'YourPassword')
-bot.comment_users_posts(bot.user_followers('therock'), 'great content!')
+    # Likes the first 3 posts of the newest followers of a specified user 
+    def like_user_followers(self, user, limit=30):
+        users = self.user_followers(user, limit=limit)
+        self.like_users_posts(users)
+
+    # Comments on the first post of the newsest followers of a specified user
+    def comment_user_followers(self, user, comment, limit=30):
+        users = self.user_followers(user, limit=limit)
+        self.comment_users_posts(users, comment)
+
+    # Follow the newest followers of a specified user
+    def follow_user_followers(self, user, limit=30):
+        users = self.user_followers(user, limit=limit)
+        self.follow_users(users)
+
+    
+bot = InstagramBot(YourUsername, YourPassword)
+# bot.like_user_followers('therock')
+# bot.comment_user_followers('kevinhart4real', ':)')
+bot.follow_user_followers('instagram')
