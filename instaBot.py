@@ -155,10 +155,11 @@ class InstagramBot:
             photo = self.driver.find_element_by_class_name('eLAPa')
             photo.click()
             sleep(2)
-            comment_button = self.driver.find_elements_by_class_name('_8-yf5 ')[5]
+            comment_button = bot.driver.find_element_by_class_name('_JgwE')
             comment_button.click()
             sleep(2)
             comment_field = self.driver.find_element_by_class_name('Ypffh')
+            sleep(2)
             comment_field.send_keys(comment)
             sleep(2)
             post = self.driver.find_element_by_xpath('//button[contains(text(), "Post")]')
