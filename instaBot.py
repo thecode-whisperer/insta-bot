@@ -54,7 +54,7 @@ class InstagramBot:
             photo.click()
             sleep(self.random_number_generator(2, 7))
             for _ in range(limit):
-                like_btn = self.driver.find_elements_by_class_name('_8-yf5 ')[4]
+                like_btn = self.driver.find_elements_by_class_name('wpO6b ')[1]
                 sleep(self.random_number_generator(2, 5))
                 like_btn.click()
                 next_btn = self.driver.find_element_by_xpath("//a[contains(text(), 'Next')]")
@@ -62,7 +62,6 @@ class InstagramBot:
                 next_btn.click()
                 sleep(self.random_number_generator(3, 6))
         except:
-
             pass
         
     def like_tag_post(self, tag, limit=10):
@@ -186,9 +185,32 @@ class InstagramBot:
     def follow_user_followers(self, user, limit=30):
         users = self.user_followers(user, limit=limit)
         self.follow_users(users)
-
+    
+    def user_photo_likers(self, user, limit=30):
+        self.nav_user(user)
+        sleep(self.random_number_generator(2, 4))
+        photo = self.driver.find_element_by_class_name('eLAPa')
+        photo.click()
+        sleep(self.random_number_generator(2, 5))
+        button = self.driver.find_elements_by_class_name('_8A5w5')[1]
+        sleep(1)
+        button.click()
+        sleep(self.random_number_generator(2, 4))
+        fBody = self.driver.find_element_by_xpath('//div[@style="height: 356px; overflow: hidden auto;"]')
+        sleep(2)
+        likers_list = []
+        for i in range(3):
+            scroll = 0
+            while scroll < 10:
+                self.driver.execute_script('arguments[0].scrollTop = arguments[0].scrollTop + arguments[0].offsetHeight;', fBody)
+                scroll += 1
+                sleep(1)
+            sleep(1)
+            for i in range(limit):
+                liker = self.driver.find_elements_by_class_name('KV-D4')[i+1]
+                if liker.text not in likers_list:
+                    likers_list.append(liker.text)
+        print(likers_list)
+        return likers_list
     
 bot = InstagramBot(YourUsername, YourPassword)
-# bot.like_user_followers('therock')
-# bot.comment_user_followers('kevinhart4real', ':)')
-bot.follow_user_followers('instagram')
