@@ -213,4 +213,6 @@ class InstagramBot:
         print(likers_list)
         return likers_list
     
-bot = InstagramBot(YourUsername, YourPassword)
+if __name__ == "__main__":
+    
+    bot = InstagramBot(YourUsername, YourPassword)
